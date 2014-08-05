@@ -25,7 +25,7 @@
     {{#each players}}
       {{> player}}
     {{/each}}
-    {{> quickForm collection="Players" id="addPlayer" type="insert"}}
+    {{> quickForm collection="Players" id="addPlayer" type="insert" buttonContent="Add Player" fields="title"}}
   </div>
 </template>
 
@@ -34,32 +34,47 @@
     {{#each matches}}
       {{> match}}
     {{/each}}
+    {{> quickForm collection="Matches" id="matchForm" type="insert" buttonContent="Add Match"}}
   </div>
 </template>
-
 
 <template name="decks">
   <div class="decks col-md-4">
     {{#each decks}}
       {{> deck}}
     {{/each}}
+    {{> quickForm collection="Decks" id="addDeck" type="insert" buttonContent="Add Deck" fields="title,colors"}}
   </div>
 </template>
 
 <template name="player">
-  <div class="player {{selected}}">
-    <span>{{name}}</span>
+  <div class="well well-sm player {{selected}}">
+    <span>Player: {{title}}</span>
+    <br/>
+    <span>Matches: {{matchWins}}-{{matchLosses}}</span>
+    <br/>
+    <span>Games: {{gameWins}}-{{gameLosses}}</span>
   </div>
 </template>
 
 <template name="match">
-  <div class="match {{selected}}">
-    <span>{{player1}} vs. {{player2}}</span>
+  <div class="well well-sm match {{selected}}">
+    <span>Players: {{player1.title}} vs. {{player2.title}}</span>
+    <br/>
+    <span>Decks: {{deck1.title}} vs. {{deck2.title}}</span>
+    <br/>
+    <span>Score: {{wins1}} - {{wins2}}</span>
   </div>
 </template>
 
 <template name="deck">
-  <div class="deck {{selected}}">
-    <span>{{name}}</span>
+  <div class="well well-sm deck {{selected}}">
+    <span>Deck: {{title}}</span>
+    <br/>
+    <span>Colors: {{colors}}</span>
+    <br/>
+    <span>Matches: {{matchWins}}-{{matchLosses}}</span>
+    <br/>
+    <span>Games: {{gameWins}}-{{gameLosses}}</span>
   </div>
 </template>
