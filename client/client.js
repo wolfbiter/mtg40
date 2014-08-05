@@ -1,64 +1,61 @@
-Players = new Meteor.Collection('players');
-Matches = new Meteor.Collection('matches');
-Decks = new Meteor.Collection('decks');
+/*******************/
+/***** Players *****/
+/*******************/
 
-if (Meteor.isClient) {
+Template.players.players = function () {
+  return Players.find();
+};
 
-  Template.players.players = function () {
-    return Players.find();
-  };
+Template.player.selected = function () {
+  return Session.equals("selected_player", this._id) ? "selected" : '';
+};
 
-  Template.matches.matches = function () {
-    return Matches.find();
-  };
+Template.players.events({
+  'click create': function () {
+    Session.set("selected_player", this._id);
+  },
+});
 
-  Template.decks.decks = function () {
-    return Decks.find();
-  };
+Template.player.events({
+  'click': function () {
+    Session.set("selected_player", this._id);
+  },
+});
 
-  Template.players.events({
-    'click create': function () {
-      Session.set("selected_player", this._id);
-    },
-  });
 
-  Template.player.events({
-    'click': function () {
-      Session.set("selected_player", this._id);
-    },
-  });
+/*******************/
+/***** Matches *****/
+/*******************/
 
-  Template.match.events({
-    'click': function () {
-      Session.set("selected_match", this._id);
-    },
-  });
+Template.matches.matches = function () {
+  return Matches.find();
+};
 
-  Template.deck.events({
-    'click': function () {
-      Session.set("selected_deck", this._id);
-    },
-  });
+Template.match.selected = function () {
+  return Session.equals("selected_match", this._id) ? "selected" : '';
+};
 
-}
+Template.match.events({
+  'click': function () {
+    Session.set("selected_match", this._id);
+  },
+});
 
-function Player(name) {
-  this['name'] = name;
-  Players.insert(this);
-}
 
-function Match(p1, p2, d1, d2, w1, w2) {
-  this['p1'] = p1;
-  this['p2'] = p2;
-  this['d1'] = d1;
-  this['d2'] = d2;
-  this['w1'] = w1;
-  this['w2'] = w2;
-  Matches.insert(this);
-}
+/*******************/
+/****** Decks ******/
+/*******************/
 
-function Deck(name, colors) {
-  this['name'] = name;
-  this['colors'] = colors;
-  Decks.insert(this);
-}
+Template.decks.decks = function () {
+  return Decks.find();
+};
+
+Template.deck.selected = function () {
+  return Session.equals("selected_deck", this._id) ? "selected" : '';
+};
+
+Template.deck.events({
+  'click': function () {
+    Session.set("selected_deck", this._id);
+  },
+});

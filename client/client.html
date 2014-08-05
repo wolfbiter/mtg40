@@ -13,7 +13,7 @@
 </template>
 
 <template name="lists">
-  <div class="lists">
+  <div class="lists row">
     {{> players}}
     {{> matches}}
     {{> decks}}
@@ -21,16 +21,16 @@
 </template>
 
 <template name="players">
-  <div class="players">
+  <div class="players col-md-4">
     {{#each players}}
       {{> player}}
     {{/each}}
+    {{> quickForm collection="Players" id="addPlayer" type="insert"}}
   </div>
 </template>
 
-
 <template name="matches">
-  <div class="matches">
+  <div class="matches col-md-4">
     {{#each matches}}
       {{> match}}
     {{/each}}
@@ -39,7 +39,7 @@
 
 
 <template name="decks">
-  <div class="decks">
+  <div class="decks col-md-4">
     {{#each decks}}
       {{> deck}}
     {{/each}}

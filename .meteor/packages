@@ -6,4 +6,9 @@
 standard-app-packages
 autopublish
 insecure
-preserve-inputs
+
+collection2
+simple-schema
+autoform
+moment
+bootstrap-3
