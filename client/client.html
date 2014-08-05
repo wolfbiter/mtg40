@@ -22,6 +22,7 @@
 
 <template name="players">
   <div class="players col-md-4">
+    <h2>Players</h2>
     {{#each players}}
       {{> player}}
     {{/each}}
@@ -31,6 +32,7 @@
 
 <template name="matches">
   <div class="matches col-md-4">
+    <h2>Matches</h2>
     {{#each matches}}
       {{> match}}
     {{/each}}
@@ -40,6 +42,7 @@
 
 <template name="decks">
   <div class="decks col-md-4">
+    <h2>Decks</h2>
     {{#each decks}}
       {{> deck}}
     {{/each}}
@@ -51,9 +54,9 @@
   <div class="well well-sm player {{selected}}">
     <span>Player: {{title}}</span>
     <br/>
-    <span>Matches: {{matchWins}}-{{matchLosses}}</span>
+    <span>Matches: {{matchWins}} - {{matchLosses}}</span>
     <br/>
-    <span>Games: {{gameWins}}-{{gameLosses}}</span>
+    <span>Games: {{gameWins}} - {{gameLosses}}</span>
   </div>
 </template>
 
@@ -73,8 +76,8 @@
     <br/>
     <span>Colors: {{colors}}</span>
     <br/>
-    <span>Matches: {{matchWins}}-{{matchLosses}}</span>
+    <span>Matches: {{matchWins}} - {{matchLosses}}</span>
     <br/>
-    <span>Games: {{gameWins}}-{{gameLosses}}</span>
+    <span>Games: {{gameWins}} - {{gameLosses}}</span>
   </div>
 </template>

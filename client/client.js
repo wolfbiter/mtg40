@@ -42,7 +42,7 @@ AutoForm.hooks({
       } else {
         // incomplete/draw
       }
-      
+
       // push updates
       Players.update(player1._id, {$set: player1});
       Players.update(player2._id, {$set: player2});
@@ -57,7 +57,9 @@ AutoForm.hooks({
 /*******************/
 
 Template.players.players = function () {
-  return Players.find();
+  return Players.find({}, {
+    'sort': [['matchWins', 'desc'], ['gameWins', 'desc']],
+  });
 };
 
 Template.player.selected = function () {
@@ -107,7 +109,9 @@ Template.match.events({
 /*******************/
 
 Template.decks.decks = function () {
-  return Decks.find();
+  return Decks.find({}, {
+    'sort': [['matchWins', 'desc'], ['gameWins', 'desc']],
+  });
 };
 
 Template.deck.selected = function () {
