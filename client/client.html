@@ -1,0 +1,65 @@
+<head>
+  <title>mtg</title>
+</head>
+
+<body>
+  {{> lists}}
+  {{> current}}
+</body>
+
+<template name="current">
+  <table>
+  </table>
+</template>
+
+<template name="lists">
+  <div class="lists">
+    {{> players}}
+    {{> matches}}
+    {{> decks}}
+  </div>
+</template>
+
+<template name="players">
+  <div class="players">
+    {{#each players}}
+      {{> player}}
+    {{/each}}
+  </div>
+</template>
+
+
+<template name="matches">
+  <div class="matches">
+    {{#each matches}}
+      {{> match}}
+    {{/each}}
+  </div>
+</template>
+
+
+<template name="decks">
+  <div class="decks">
+    {{#each decks}}
+      {{> deck}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="player">
+  <div class="player {{selected}}">
+    <span>{{name}}</span>
+  </div>
+</template>
+
+<template name="match">
+  <div class="match {{selected}}">
+    <span>{{player1}} vs. {{player2}}</span>
+  </div>
+</template>
+
+<template name="deck">
+  <div class="deck {{selected}}">
+    <span>{{name}}</span>
+  </div>
+</template>

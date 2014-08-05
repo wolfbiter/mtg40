@@ -1,0 +1,6 @@
+/* CSS declarations go here */
+
+.selected {
+  color: white;
+  background-color: blue;
+}
