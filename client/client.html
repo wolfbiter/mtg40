@@ -26,8 +26,12 @@
     {{#each players}}
       {{> player}}
     {{/each}}
-    {{> quickForm collection="Players" id="addPlayer" type="insert" buttonContent="Add Player" fields="title"}}
+    {{> playerForm}}
   </div>
+</template>
+
+<template name="playerForm">
+  {{> quickForm collection="Players" id="playerForm" doc=doc type=type buttonContent=buttonContent fields="title"}}
 </template>
 
 <template name="matches">
@@ -36,8 +40,12 @@
     {{#each matches}}
       {{> match}}
     {{/each}}
-    {{> quickForm collection="Matches" id="matchForm" type="insert" buttonContent="Add Match"}}
+    {{> matchForm}}
   </div>
+</template>
+
+<template name="matchForm">
+  {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent}}
 </template>
 
 <template name="decks">
@@ -46,8 +54,12 @@
     {{#each decks}}
       {{> deck}}
     {{/each}}
-    {{> quickForm collection="Decks" id="addDeck" type="insert" buttonContent="Add Deck" fields="title,colors"}}
+    {{> deckForm}}
   </div>
+</template>
+
+<template name="deckForm">
+  {{> quickForm collection="Decks" id="deckForm" doc=doc type=type buttonContent=buttonContent fields="title,colors"}}
 </template>
 
 <template name="player">

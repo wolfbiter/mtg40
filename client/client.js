@@ -1,3 +1,22 @@
+/******************/
+/****** Init ******/
+/******************/
+
+Session.set("player_form", {
+  'type': 'insert',
+  'buttonContent': 'Add Player',
+});
+
+Session.set("match_form", {
+  'type': 'insert',
+  'buttonContent': 'Add Match',
+});
+
+Session.set("deck_form", {
+  'type': 'insert',
+  'buttonContent': 'Add Deck',
+});
+
 /*******************/
 /****** Hooks ******/
 /*******************/
@@ -66,17 +85,28 @@ Template.player.selected = function () {
   return Session.equals("selected_player", this._id) ? "selected" : '';
 };
 
-Template.players.events({
-  'click create': function () {
-    Session.set("selected_player", this._id);
-  },
-});
-
 Template.player.events({
   'click': function () {
     Session.set("selected_player", this._id);
+    Session.set("player_form", {
+      'type': 'update',
+      'buttonContent': 'Edit Player',
+      'id': this._id,
+    });
   },
 });
+
+Template.playerForm.type = function () {
+  return Session.get("player_form").type;
+}
+
+Template.playerForm.buttonContent = function () {
+  return Session.get("player_form").buttonContent;
+}
+
+Template.playerForm.doc = function () {
+  return Players.findOne(Session.get("player_form").id);
+}
 
 
 /*******************/
@@ -90,7 +120,7 @@ Template.matches.matches = function () {
     match['deck1'] = Decks.findOne(match['deck1']);
     match['deck2'] = Decks.findOne(match['deck2']);
     return match;
-    });
+  });
 };
 
 Template.match.selected = function () {
@@ -100,8 +130,25 @@ Template.match.selected = function () {
 Template.match.events({
   'click': function () {
     Session.set("selected_match", this._id);
+    Session.set("match_form", {
+      'type': 'update',
+      'buttonContent': 'Edit Match',
+      'id': this._id,
+    });
   },
 });
+
+Template.matchForm.type = function () {
+  return Session.get("match_form").type;
+}
+
+Template.matchForm.buttonContent = function () {
+  return Session.get("match_form").buttonContent;
+}
+
+Template.matchForm.doc = function () {
+  return Matches.findOne(Session.get("match_form").id);
+}
 
 
 /*******************/
@@ -121,5 +168,22 @@ Template.deck.selected = function () {
 Template.deck.events({
   'click': function () {
     Session.set("selected_deck", this._id);
+    Session.set("deck_form", {
+      'type': 'update',
+      'buttonContent': 'Edit Deck',
+      'id': this._id,
+    });
   },
 });
+
+Template.deckForm.type = function () {
+  return Session.get("deck_form").type;
+}
+
+Template.deckForm.buttonContent = function () {
+  return Session.get("deck_form").buttonContent;
+}
+
+Template.deckForm.doc = function () {
+  return Decks.findOne(Session.get("deck_form").id);
+}
