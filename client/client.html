@@ -3,6 +3,7 @@
 </head>
 
 <body>
+  <div id="d3"></div>
   {{> lists}}
   {{> current}}
 </body>
@@ -13,6 +14,8 @@
 </template>
 
 <template name="lists">
+  <hr/>
+  {{> formControls}}
   <div class="lists row">
     {{> players}}
     {{> matches}}
@@ -20,46 +23,63 @@
   </div>
 </template>
 
+<template name="formControls">
+  <div class="formControls">
+    <button class="create btn btn-default {{createActive}}">Add</button>
+    <button class="update btn btn-default {{updateActive}}">Edit</button>
+    <button class="none btn btn-default {{noneActive}}">None</button>
+  </div>
+</template>
+
 <template name="players">
   <div class="players col-md-4">
     <h2>Players</h2>
+    {{> playerForm}}
     {{#each players}}
       {{> player}}
     {{/each}}
-    {{> playerForm}}
   </div>
 </template>
 
 <template name="playerForm">
+  {{#if formActive}}
   {{> quickForm collection="Players" id="playerForm" doc=doc type=type buttonContent=buttonContent fields="title"}}
+  <hr/>
+  {{/if}}
 </template>
 
 <template name="matches">
   <div class="matches col-md-4">
     <h2>Matches</h2>
+    {{> matchForm}}
     {{#each matches}}
       {{> match}}
     {{/each}}
-    {{> matchForm}}
   </div>
 </template>
 
 <template name="matchForm">
+  {{#if formActive}}
   {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent}}
+  <hr/>
+  {{/if}}
 </template>
 
 <template name="decks">
   <div class="decks col-md-4">
     <h2>Decks</h2>
+    {{> deckForm}}
     {{#each decks}}
       {{> deck}}
     {{/each}}
-    {{> deckForm}}
   </div>
 </template>
 
 <template name="deckForm">
+  {{#if formActive}}
   {{> quickForm collection="Decks" id="deckForm" doc=doc type=type buttonContent=buttonContent fields="title,colors"}}
+  <hr/>
+  {{/if}}
 </template>
 
 <template name="player">

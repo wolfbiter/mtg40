@@ -1,5 +1,9 @@
 /* CSS declarations go here */
 
+body {
+  overflow-x: hidden;
+}
+
 .selected {
   color: white;
   background-color: blue;
@@ -8,4 +12,12 @@
 .player, .match, .deck {
   border: 2px solid #000000;
   border-radius: 2px;
+}
+
+#d3 {
+  text-align: center;
+}
+
+.formControls {
+  text-align: center;
 }

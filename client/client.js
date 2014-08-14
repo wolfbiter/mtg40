@@ -2,30 +2,35 @@
 /****** Init ******/
 /******************/
 
-Session.set("player_form", {
-  'type': 'insert',
-  'buttonContent': 'Add Player',
-});
+Utils = {
 
-Session.set("match_form", {
-  'type': 'insert',
-  'buttonContent': 'Add Match',
-});
+  'resetStats': function () {
+    // clear all player stats
+    Players.find().fetch().forEach(function (player) {
+      Players.update(player._id, { '$set': {
+        'gameWins': 0,
+        'gameLosses': 0,
+        'matchWins': 0,
+        'matchLosses': 0,
+      }});
+    });
+    // clear all deck stats
+    Decks.find().fetch().forEach(function (deck) {
+      Decks.update(deck._id, { '$set': {
+        'gameWins': 0,
+        'gameLosses': 0,
+        'matchWins': 0,
+        'matchLosses': 0,
+      }});
+    });
+  },
 
-Session.set("deck_form", {
-  'type': 'insert',
-  'buttonContent': 'Add Deck',
-});
+  'calculateStats': function () {
+    // reset stats
+    Utils.resetStats();
+    // calculate new stats
+    Matches.find().fetch().forEach(function (match) {
 
-/*******************/
-/****** Hooks ******/
-/*******************/
-
-AutoForm.hooks({
-  'matchForm': {
-    'onSuccess': function (error, result, template) {
-      var match = Matches.findOne(result);
-      // TODO: figure out how this shifts with update and delete
       var player1 = Players.findOne(match['player1']);
       var player2 = Players.findOne(match['player2']);
       var deck1 = Decks.findOne(match['deck1']);
@@ -67,9 +72,55 @@ AutoForm.hooks({
       Players.update(player2._id, {$set: player2});
       Decks.update(deck1._id, {$set: deck1});
       Decks.update(deck2._id, {$set: deck2});
-    },
+    });
   },
+};
+
+Session.set("formControls", {
+  'type': 'none',
+  'buttonContent': 'none',
 });
+
+
+/************************/
+/***** FormControls *****/
+/************************/
+
+Template.formControls.createActive = function () {
+  return Session.get("formControls").type == 'insert' ? 'active' : '';
+}
+
+Template.formControls.updateActive = function () {
+  return Session.get("formControls").type == 'update' ? 'active' : '';
+}
+
+Template.formControls.noneActive = function () {
+  return Session.get("formControls").type == 'none' ? 'active' : '';
+}
+
+Template.formControls.events({
+
+  'click .create': function (e) {
+    Session.set("formControls", {
+      'type': 'insert',
+      'buttonContent': 'Add',
+    });
+  },
+  'click .update': function (e) {
+    Session.set("formControls", {
+      'type': 'update',
+      'buttonContent': 'Edit',
+    });
+  },
+  'click .none': function (e) {
+    Session.set("formControls", {
+      'type': 'none',
+      'buttonContent': 'None',
+    });
+  },
+
+})
+
 
 /*******************/
 /***** Players *****/
@@ -86,26 +137,25 @@ Template.player.selected = function () {
 };
 
 Template.player.events({
-  'click': function () {
+  'click': function (e) {
     Session.set("selected_player", this._id);
-    Session.set("player_form", {
-      'type': 'update',
-      'buttonContent': 'Edit Player',
-      'id': this._id,
-    });
   },
 });
 
 Template.playerForm.type = function () {
-  return Session.get("player_form").type;
+  return Session.get("formControls").type;
 }
 
 Template.playerForm.buttonContent = function () {
-  return Session.get("player_form").buttonContent;
+  return Session.get("formControls").buttonContent + " Player";
 }
 
 Template.playerForm.doc = function () {
-  return Players.findOne(Session.get("player_form").id);
+  return Players.findOne(Session.get("selected_player")) || Players.findOne();
+}
+
+Template.playerForm.formActive = function () {
+  return (Session.get("formControls").type === 'none') ? false : true;
 }
 
 
@@ -130,24 +180,23 @@ Template.match.selected = function () {
 Template.match.events({
   'click': function () {
     Session.set("selected_match", this._id);
-    Session.set("match_form", {
-      'type': 'update',
-      'buttonContent': 'Edit Match',
-      'id': this._id,
-    });
   },
 });
 
 Template.matchForm.type = function () {
-  return Session.get("match_form").type;
+  return Session.get("formControls").type;
 }
 
 Template.matchForm.buttonContent = function () {
-  return Session.get("match_form").buttonContent;
+  return Session.get("formControls").buttonContent + " Match";
 }
 
 Template.matchForm.doc = function () {
-  return Matches.findOne(Session.get("match_form").id);
+  return Matches.findOne(Session.get("selected_match")) || Matches.findOne();
+}
+
+Template.matchForm.formActive = function () {
+  return Session.get("formControls").type === 'none' ? false : true;
 }
 
 
@@ -168,22 +217,34 @@ Template.deck.selected = function () {
 Template.deck.events({
   'click': function () {
     Session.set("selected_deck", this._id);
-    Session.set("deck_form", {
-      'type': 'update',
-      'buttonContent': 'Edit Deck',
-      'id': this._id,
-    });
   },
 });
 
 Template.deckForm.type = function () {
-  return Session.get("deck_form").type;
+  return Session.get("formControls").type;
 }
 
 Template.deckForm.buttonContent = function () {
-  return Session.get("deck_form").buttonContent;
+  return Session.get("formControls").buttonContent + " Deck";
 }
 
 Template.deckForm.doc = function () {
-  return Decks.findOne(Session.get("deck_form").id);
+  return Decks.findOne(Session.get("selected_deck")) || Decks.findOne();
 }
+
+Template.deckForm.formActive = function () {
+  return Session.get("formControls").type === 'none' ? false : true;
+}
+
+
+/*******************/
+/****** Hooks ******/
+/*******************/
+
+AutoForm.hooks({
+  'matchForm': {
+    'onSuccess': function (error, result, template) {
+      Utils.calculateStats();
+    },
+  },
+});
