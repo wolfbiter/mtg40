@@ -58,6 +58,12 @@ Matches = new Meteor.Collection('matches', {
         return winsValidation(wins1, wins2);
       },
     },
+    'notes': {
+      'type': String,
+      'label': 'Notes',
+      'optional': true,
+      'defaultValue': '',
+    },
   }
 });
 
