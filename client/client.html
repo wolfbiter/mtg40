@@ -33,7 +33,7 @@
 
 <template name="players">
   <div class="players col-md-4">
-    <h2>Players</h2>
+    <h2>{{count}} Players</h2>
     {{> playerForm}}
     {{#each players}}
       {{> player}}
@@ -50,7 +50,7 @@
 
 <template name="matches">
   <div class="matches col-md-4">
-    <h2>Matches</h2>
+    <h2>{{count}} Matches</h2>
     {{> matchForm}}
     {{#each matches}}
       {{> match}}
@@ -67,7 +67,7 @@
 
 <template name="decks">
   <div class="decks col-md-4">
-    <h2>Decks</h2>
+    <h2>{{count}} Decks</h2>
     {{> deckForm}}
     {{#each decks}}
       {{> deck}}

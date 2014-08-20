@@ -148,6 +148,10 @@ Template.players.players = function () {
   });
 };
 
+Template.players.count = function () {
+  return Players.find({}).count();
+};
+
 Template.player.selected = function () {
   return Session.equals("selected_player", this._id) ? "selected" : '';
 };
@@ -209,6 +213,30 @@ Template.matches.matches = function () {
   });
 };
 
+Template.matches.count = function () {
+  // TODO: don't duplicate
+  var deck = Session.get("selected_deck");
+  var player = Session.get("selected_player");
+  // get selected matches
+  var criteria = {};
+  if (deck && player) {
+    criteria = { $and: [
+      { $or: [ { 'deck1': deck, }, { 'deck2': deck, } ], },
+      { $or: [ { 'player1': player, }, { 'player2': player, } ], },
+    ]};
+  } else if (deck) {
+    criteria = { $or: [
+      { 'deck1': deck, }, { 'deck2': deck, }
+    ]};
+  } else if (player) {
+    criteria = { $or: [
+      { 'player1': player, }, { 'player2': player, }
+    ]};
+  }
+  var matches = Matches.find(criteria);
+  return Matches.find(criteria).count();
+};
+
 Template.match.selected = function () {
   return Session.equals("selected_match", this._id) ? "selected" : '';
 };
@@ -244,6 +272,10 @@ Template.decks.decks = function () {
   return Decks.find({}, {
     'sort': [['matchWins', 'desc'], ['gameWins', 'desc']],
   });
+};
+
+Template.decks.count = function () {
+  return Decks.find({}).count();
 };
 
 Template.deck.selected = function () {
