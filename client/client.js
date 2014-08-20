@@ -171,7 +171,9 @@ Template.playerForm.buttonContent = function () {
 }
 
 Template.playerForm.doc = function () {
-  return Players.findOne(Session.get("selected_player")) || Players.findOne();
+  if (Session.get("formControls").type === 'update') {
+    return Players.findOne(Session.get("selected_player")) || Players.findOne();
+  }
 }
 
 Template.playerForm.formActive = function () {
@@ -256,7 +258,9 @@ Template.matchForm.buttonContent = function () {
 }
 
 Template.matchForm.doc = function () {
-  return Matches.findOne(Session.get("selected_match")) || Matches.findOne();
+  if (Session.get("formControls").type === 'update') {
+    return Matches.findOne(Session.get("selected_match")) || Matches.findOne();
+  }
 }
 
 Template.matchForm.formActive = function () {
@@ -297,7 +301,9 @@ Template.deckForm.buttonContent = function () {
 }
 
 Template.deckForm.doc = function () {
-  return Decks.findOne(Session.get("selected_deck")) || Decks.findOne();
+  if (Session.get("formControls").type === 'update') {
+    return Decks.findOne(Session.get("selected_deck")) || Decks.findOne();
+  }
 }
 
 Template.deckForm.formActive = function () {
