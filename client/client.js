@@ -164,7 +164,19 @@ Template.playerForm.formActive = function () {
 /*******************/
 
 Template.matches.matches = function () {
-  return _.map(Matches.find().fetch(), function(match) {
+  var deck = Session.get("selected_deck");
+  var player = Session.get("selected_player");
+  // get selected matches
+  var matches = Matches.find({
+    $or: [ { 'deck1': deck, }, { 'deck2': deck, } ],
+    $or: [ { 'player1': player, }, { 'player2': player, } ],
+  });
+  // or get all matches
+  if (matches.count() < 1) {
+    matches = Matches.find({});
+  }
+  // add player and deck information
+  return _.map(matches.fetch(), function(match) {
     match['player1'] = Players.findOne(match['player1']);
     match['player2'] = Players.findOne(match['player2']);
     match['deck1'] = Decks.findOne(match['deck1']);
