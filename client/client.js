@@ -134,6 +134,7 @@ Template.formControls.events({
     });
     //Utils.unselectAll();
   },
+  'click .unselectAll': Utils.unselectAll,
 
 })
 
