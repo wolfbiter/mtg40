@@ -4,6 +4,12 @@
 
 Utils = {
 
+  'unselectAll': function () {
+    Session.set("selected_player", undefined);
+    Session.set("selected_match", undefined);
+    Session.set("selected_deck", undefined);
+  },
+
   'resetStats': function () {
     // clear all player stats
     Players.find().fetch().forEach(function (player) {
@@ -81,6 +87,15 @@ Session.set("formControls", {
   'buttonContent': 'none',
 });
 
+// hack to wait for Meteor.Keybindings to load
+var keyBindingsInterval = Meteor.setInterval(function(){
+  if (Meteor.Keybindings) {
+    Meteor.clearInterval(keyBindingsInterval);
+    // add keybindings
+    Meteor.Keybindings.addOne('esc', Utils.unselectAll);
+  }
+}, 500);
+
 
 /************************/
 /***** FormControls *****/
@@ -117,6 +132,7 @@ Template.formControls.events({
       'type': 'none',
       'buttonContent': 'None',
     });
+    //Utils.unselectAll();
   },
 
 })
@@ -167,14 +183,22 @@ Template.matches.matches = function () {
   var deck = Session.get("selected_deck");
   var player = Session.get("selected_player");
   // get selected matches
-  var matches = Matches.find({
-    $or: [ { 'deck1': deck, }, { 'deck2': deck, } ],
-    $or: [ { 'player1': player, }, { 'player2': player, } ],
-  });
-  // or get all matches
-  if (matches.count() < 1) {
-    matches = Matches.find({});
+  var criteria = {};
+  if (deck && player) {
+    criteria = { $and: [
+      { $or: [ { 'deck1': deck, }, { 'deck2': deck, } ], },
+      { $or: [ { 'player1': player, }, { 'player2': player, } ], },
+    ]};
+  } else if (deck) {
+    criteria = { $or: [
+      { 'deck1': deck, }, { 'deck2': deck, }
+    ]};
+  } else if (player) {
+    criteria = { $or: [
+      { 'player1': player, }, { 'player2': player, }
+    ]};
   }
+  var matches = Matches.find(criteria);
   // add player and deck information
   return _.map(matches.fetch(), function(match) {
     match['player1'] = Players.findOne(match['player1']);

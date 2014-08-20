@@ -5,7 +5,8 @@
       "collection2": {},
       "autoform": {},
       "bootstrap-3": {},
-      "easy-search": {}
+      "easy-search": {},
+      "keybindings": {}
     },
     "packages": {
       "collection2": {
@@ -27,6 +28,11 @@
         "git": "https://github.com/matteodem/meteor-easy-search.git",
         "tag": "v1.0.4",
         "commit": "97893a0e6b79132af3397cb39a59aa8836ec3ccd"
+      },
+      "keybindings": {
+        "git": "https://github.com/matteodem/meteor-keybindings.git",
+        "tag": "v0.4.1",
+        "commit": "d461475eec435acd8b61af6f1b8696fc70fcea78"
       },
       "simple-schema": {
         "git": "https://github.com/aldeed/meteor-simple-schema.git",
