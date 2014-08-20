@@ -6,7 +6,18 @@ body {
 
 .selected {
   color: white;
-  background-color: blue;
+  font-weight: bold;
+}
+.player.selected {
+  background-color: darkblue;
+}
+
+.match.selected {
+  background-color: purple;
+}
+
+.deck.selected {
+  background-color: firebrick;
 }
 
 .player, .match, .deck {
