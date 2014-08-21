@@ -10,6 +10,40 @@ Utils = {
     Session.set("selected_deck", undefined);
   },
 
+  'getMatches': function (getModels) {
+    var deck = Session.get("selected_deck");
+    var player = Session.get("selected_player");
+    // get selected matches
+    var criteria = {};
+    if (deck && player) {
+      criteria = { $and: [
+        { $or: [ { 'deck1': deck, }, { 'deck2': deck, } ], },
+        { $or: [ { 'player1': player, }, { 'player2': player, } ], },
+      ]};
+    } else if (deck) {
+      criteria = { $or: [
+        { 'deck1': deck, }, { 'deck2': deck, }
+      ]};
+    } else if (player) {
+      criteria = { $or: [
+        { 'player1': player, }, { 'player2': player, }
+      ]};
+    }
+    var matches = Matches.find(criteria);
+    if (getModels) {
+      // add player and deck information
+      return _.map(matches.fetch(), function(match) {
+        match['player1'] = Players.findOne(match['player1']);
+        match['player2'] = Players.findOne(match['player2']);
+        match['deck1'] = Decks.findOne(match['deck1']);
+        match['deck2'] = Decks.findOne(match['deck2']);
+        return match;
+      });
+    } else {
+      return matches;
+    }
+  },
+
   'resetStats': function () {
     // clear all player stats
     Players.find().fetch().forEach(function (player) {
@@ -82,6 +116,8 @@ Utils = {
   },
 };
 
+Session.set("dataset", "players");
+
 Session.set("formControls", {
   'type': 'none',
   'buttonContent': 'none',
@@ -132,7 +168,12 @@ Template.formControls.events({
       'type': 'none',
       'buttonContent': 'None',
     });
-    //Utils.unselectAll();
+  },
+  'click .playerBars': function () {
+    Session.set("dataset", "players");
+  },
+  'click .deckBars': function () {
+    Session.set("dataset", "decks");
   },
   'click .unselectAll': Utils.unselectAll,
 
@@ -187,57 +228,11 @@ Template.playerForm.formActive = function () {
 /*******************/
 
 Template.matches.matches = function () {
-  var deck = Session.get("selected_deck");
-  var player = Session.get("selected_player");
-  // get selected matches
-  var criteria = {};
-  if (deck && player) {
-    criteria = { $and: [
-      { $or: [ { 'deck1': deck, }, { 'deck2': deck, } ], },
-      { $or: [ { 'player1': player, }, { 'player2': player, } ], },
-    ]};
-  } else if (deck) {
-    criteria = { $or: [
-      { 'deck1': deck, }, { 'deck2': deck, }
-    ]};
-  } else if (player) {
-    criteria = { $or: [
-      { 'player1': player, }, { 'player2': player, }
-    ]};
-  }
-  var matches = Matches.find(criteria);
-  // add player and deck information
-  return _.map(matches.fetch(), function(match) {
-    match['player1'] = Players.findOne(match['player1']);
-    match['player2'] = Players.findOne(match['player2']);
-    match['deck1'] = Decks.findOne(match['deck1']);
-    match['deck2'] = Decks.findOne(match['deck2']);
-    return match;
-  });
+  return Utils.getMatches(true);
 };
 
 Template.matches.count = function () {
-  // TODO: don't duplicate
-  var deck = Session.get("selected_deck");
-  var player = Session.get("selected_player");
-  // get selected matches
-  var criteria = {};
-  if (deck && player) {
-    criteria = { $and: [
-      { $or: [ { 'deck1': deck, }, { 'deck2': deck, } ], },
-      { $or: [ { 'player1': player, }, { 'player2': player, } ], },
-    ]};
-  } else if (deck) {
-    criteria = { $or: [
-      { 'deck1': deck, }, { 'deck2': deck, }
-    ]};
-  } else if (player) {
-    criteria = { $or: [
-      { 'player1': player, }, { 'player2': player, }
-    ]};
-  }
-  var matches = Matches.find(criteria);
-  return Matches.find(criteria).count();
+  return Utils.getMatches().count();
 };
 
 Template.match.selected = function () {
