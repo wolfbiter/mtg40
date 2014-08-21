@@ -54,7 +54,9 @@ Meteor.startup(function () {
       .attr("height", function(d) {
         return getValue(d) * scalar;  //Just the data value
       })
-      .attr("fill", "rgb(0, 0, 0)")
+      .attr("fill", function(d) {
+        return "rgb(0, 0, " + (getValue(d) * 10) + ")";
+      })
 
     // animate exit
     rect.exit().transition(1000)
