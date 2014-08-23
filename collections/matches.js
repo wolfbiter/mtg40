@@ -3,21 +3,21 @@ Matches = new Meteor.Collection('matches', {
     'player1': {
       'type': String,
       'autoform': {
-        'options': getPlayerOptions,
+        'options': makeOptionsFn(Players),
       },
       'label': 'Player 1',
     },
     'player2': {
       'type': String,
       'autoform': {
-        'options': getPlayerOptions,
+        'options': makeOptionsFn(Players),
       },
       'label': 'Player 2',
     },
     'deck1': {
       'type': String,
       'autoform': {
-        'options': getDeckOptions,
+        'options': makeOptionsFn(Decks),
       },
       'label': 'Player 1 Deck',
       'custom': function () {
@@ -29,7 +29,7 @@ Matches = new Meteor.Collection('matches', {
     'deck2': {
       'type': String,
       'autoform': {
-        'options': getDeckOptions,
+        'options': makeOptionsFn(Decks),
       },
       'label': 'Player 2 Deck',
       'custom': function () {
@@ -64,27 +64,39 @@ Matches = new Meteor.Collection('matches', {
       'optional': true,
       'defaultValue': '',
     },
+    'complete': {
+      'type': Boolean,
+      'autoValue': isComplete,
+    }
   }
 });
 
-function getPlayerOptions() {
-  return _.map(Players.find().fetch(), function (player) {
-    return {
-      'label': player.title,
-      'value': player._id,
-    };
-  });
-}
+Matches.allow({
 
-function getDeckOptions() {
-  return _.map(Decks.find().fetch(), function (deck) {
-    return {
-      'label': deck.title,
-      'value': deck._id,
-    };
-  });
-}
+  insert: function (userId, match) {
+    return true;
+  },
 
+  update: function (userId, matches, fields, modifier) {
+    return true;
+  },
+
+  remove: function (userId, matches) {
+    return true;
+  }
+
+});
+
+function makeOptionsFn(db) {
+  return function () {
+    return _.map(db.find().fetch(), function (model) {
+      return {
+        'label': model.title,
+        'value': model._id,
+      };
+    });
+  }
+}
 // custom validation, make sure deck1 != deck2
 function decksValidation(deck1, deck2) {
   if (deck1 == deck2) {
@@ -105,18 +117,9 @@ function winsValidation(wins1, wins2) {
   }
 }
 
-Matches.allow({
-
-  insert: function (userId, match) {
-    return true;
-  },
-
-  update: function (userId, matches, fields, modifier) {
-    return true;
-  },
-
-  remove: function (userId, matches) {
-    return true;
-  }
-
-});
+function isComplete () {
+  var wins1 = this.field('wins1').value;
+  var wins2 = this.field('wins2').value;
+  console.log("CALLING ISFINISHED", wins1, wins2)
+  return (wins1 + wins2 >= 2);
+}

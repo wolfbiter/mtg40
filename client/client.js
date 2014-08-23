@@ -44,6 +44,20 @@ Utils = {
     }
   },
 
+  'printMatch': function (match) {
+    var player1 = Players.findOne(match['player1']);
+    var player2 = Players.findOne(match['player2']);
+    var deck1 = Decks.findOne(match['deck1']);
+    var deck2 = Decks.findOne(match['deck2']);
+    var wins1 = match['wins1'];
+    var wins2 = match['wins2'];
+    console.log("-------------PRINTING MATCH-------------");
+    console.log(player1.title + " vs " + player2.title);
+    console.log(deck1.title + " vs " + deck2.title);
+    console.log(wins1 + " - " + wins2);
+    console.log("-------------END PRINTING MATCH-------------");
+  },
+
   'resetStats': function () {
     // clear all player stats
     Players.find().fetch().forEach(function (player) {
@@ -91,20 +105,23 @@ Utils = {
       deck2['gameLosses'] += wins1;
 
       // update matches
-      if (wins1 > wins2) {
-        // player1 wins
-        player1['matchWins']++;
-        deck1['matchWins']++;
-        player2['matchLosses']++;
-        deck2['matchLosses']++;
-      } else if (wins2 > wins1) {
-        // player2 wins
-        player2['matchWins']++;
-        deck2['matchWins']++;
-        player1['matchLosses']++;
-        deck1['matchLosses']++;
+      if (match.complete) {
+        if (wins1 > wins2) {
+          // player1 wins
+          player1['matchWins']++;
+          deck1['matchWins']++;
+          player2['matchLosses']++;
+          deck2['matchLosses']++;
+        } else if (wins2 > wins1) {
+          // player2 wins
+          player2['matchWins']++;
+          deck2['matchWins']++;
+          player1['matchLosses']++;
+          deck1['matchLosses']++;
+        }
       } else {
-        // incomplete/draw
+        // incomplete / draw
+        Utils.printMatch(match);
       }
 
       // push updates
@@ -114,6 +131,14 @@ Utils = {
       Decks.update(deck2._id, {$set: deck2});
     });
   },
+
+  'calculateComplete': function () {
+    Matches.find().fetch().forEach(function (match) {
+      match['complete'] = (match['wins1'] + match['wins2'] >= 2);
+      Matches.update(match._id, {$set: match});
+    });
+  },
+
 };
 
 Session.set("dataset", "players");

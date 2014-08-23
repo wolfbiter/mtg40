@@ -72,9 +72,6 @@ Meteor.startup(function () {
     // Enter new text
     //
     enter = text.enter().append("text")
-      .text(function(d) {
-        return getTitle(d) + ": " + getValue(d);
-      })
       .attr("x", function(d, i) {
         return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2
       })
@@ -97,6 +94,9 @@ Meteor.startup(function () {
       })
       .attr("y", function(d) {
         return h - (getValue(d) * scalar) - 15;
+      })
+      .text(function(d) {
+        return getTitle(d) + ": " + getValue(d);
       })
     
     // animate exit
