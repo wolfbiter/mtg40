@@ -1,4 +1,4 @@
-scalar = 20;
+scalar = 15;
 barPadding = 1;
 w = $(window).width();
 h = 500;
