@@ -115,14 +115,32 @@ function getTitle(d) {
 }
 
 function getDataset() {
-  var db;
+
+  // figure out db and fields
+  var field1, field2, db;
   switch (Session.get("dataset")) {
     case 'players':
-      db = Players; break;
+      db = Players; field1 = 'player1'; field2 = 'player2'; break;
     case 'decks':
-      db = Decks; break;
+      db = Decks; field1 = 'deck1'; field2 = 'deck2'; break;
     default:
       throw new Error("INVALID DATASET", Session.get("dataset"));
   }
-  return db.find().fetch();
+
+  // calculate data from current matches
+  var matches = Utils.getMatches().fetch();
+  var data = {};
+  matches.forEach(function (match) {
+    data[match[field1]] || (data[match[field1]] = db.findOne(match[field1]));
+    data[match[field2]] || (data[match[field2]] = db.findOne(match[field2]));
+  });
+
+  // curate objects into array
+  var dataArray = new Array;
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      dataArray.push(data[key]);
+    }
+  }
+  return dataArray;
 }
