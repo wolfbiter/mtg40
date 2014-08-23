@@ -63,7 +63,7 @@
 
 <template name="matchForm">
   {{#if formActive}}
-  {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent omitFields="complete"}}
+  {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent omitFields="complete,date"}}
   <hr/>
   {{/if}}
 </template>

@@ -67,6 +67,16 @@ Matches = new Meteor.Collection('matches', {
     'complete': {
       'type': Boolean,
       'autoValue': isComplete,
+    },
+    'date': {
+      'type': Date,
+      'autoValue': function() {
+        if (this.isInsert) {
+          return new Date;
+        } else if (this.isUpsert) {
+          return {$setOnInsert: new Date};
+        }
+      }
     }
   }
 });
@@ -120,6 +130,5 @@ function winsValidation(wins1, wins2) {
 function isComplete () {
   var wins1 = this.field('wins1').value;
   var wins2 = this.field('wins2').value;
-  console.log("CALLING ISFINISHED", wins1, wins2)
   return (wins1 + wins2 >= 2);
 }
