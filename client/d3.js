@@ -1,4 +1,4 @@
-scalar = 15;
+scalar = 100;
 barPadding = 1;
 w = $(window).width();
 h = 500;
@@ -39,7 +39,7 @@ Meteor.startup(function () {
         return getValue(d) * scalar;  //Just the data value
       })
       .attr("fill", function(d) {
-        return "rgb(0, 0, " + (getValue(d) * 10) + ")";
+        return "rgb(0, 0, " + (getValue(d) * scalar/2.0) + ")";
       })
 
     // animate update
@@ -55,7 +55,7 @@ Meteor.startup(function () {
         return getValue(d) * scalar;  //Just the data value
       })
       .attr("fill", function(d) {
-        return "rgb(0, 0, " + (getValue(d) * 10) + ")";
+        return "rgb(0, 0, " + (getValue(d) * scalar/2.0) + ")";
       })
 
     // animate exit
@@ -95,9 +95,7 @@ Meteor.startup(function () {
       .attr("y", function(d) {
         return h - (getValue(d) * scalar) - 15;
       })
-      .text(function(d) {
-        return getTitle(d) + ": " + getValue(d);
-      })
+      .text(getText)
     
     // animate exit
     text.exit().transition(1000)
@@ -107,11 +105,20 @@ Meteor.startup(function () {
 });
 
 function getValue(d) {
-  return d.matchWins || 0;
+  if (d.matchWins && d.matchLosses) {
+    return d.matchWins / d.matchLosses;
+  } else {
+    return 0;
+  }
 }
 
 function getTitle(d) {
   return d.title || "";
+}
+
+function getText(d) {
+  var value = getValue(d);
+  return getTitle(d) + ": " + value || 'n/a';
 }
 
 function getDataset() {
