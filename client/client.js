@@ -121,7 +121,6 @@ Utils = {
         }
       } else {
         // incomplete / draw
-        Utils.printMatch(match);
       }
 
       // push updates

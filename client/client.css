@@ -23,6 +23,7 @@ body {
 .player, .match, .deck {
   border: 2px solid #000000;
   border-radius: 2px;
+  cursor: pointer;
 }
 
 #d3 {
