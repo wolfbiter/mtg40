@@ -46,7 +46,7 @@
 
 <template name="playerForm">
   {{#if formActive}}
-  {{> quickForm collection="Players" id="playerForm" doc=doc type=type buttonContent=buttonContent fields="title" resetOnSuccess="true"}}
+  {{> quickForm collection="Players" id="playerForm" doc=doc type=type buttonContent=buttonContent fields="title"}}
   <hr/>
   {{/if}}
 </template>
@@ -63,7 +63,7 @@
 
 <template name="matchForm">
   {{#if formActive}}
-  {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent omitFields="complete,date" resetOnSuccess="true"}}
+  {{> quickForm collection="Matches" id="matchForm" doc=doc type=type buttonContent=buttonContent omitFields="complete,date"}}
   <hr/>
   {{/if}}
 </template>
@@ -80,7 +80,7 @@
 
 <template name="deckForm">
   {{#if formActive}}
-  {{> quickForm collection="Decks" id="deckForm" doc=doc type=type buttonContent=buttonContent fields="title,colors" resetOnSuccess="true"}}
+  {{> quickForm collection="Decks" id="deckForm" doc=doc type=type buttonContent=buttonContent fields="title,colors"}}
   <hr/>
   {{/if}}
 </template>
