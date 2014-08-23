@@ -173,6 +173,14 @@ Template.formControls.noneActive = function () {
   return Session.get("formControls").type == 'none' ? 'active' : '';
 }
 
+Template.formControls.playersActive = function () {
+  return Session.get("dataset") == 'players' ? 'active' : '';
+}
+
+Template.formControls.decksActive = function () {
+  return Session.get("dataset") == 'decks' ? 'active' : '';
+}
+
 Template.formControls.events({
 
   'click .create': function (e) {
@@ -224,7 +232,11 @@ Template.player.selected = function () {
 
 Template.player.events({
   'click': function (e) {
-    Session.set("selected_player", this._id);
+    if (Session.equals("selected_player", this._id)) {
+      Session.set("selected_player", undefined);
+    } else {
+      Session.set("selected_player", this._id);
+    }
   },
 });
 
@@ -264,8 +276,12 @@ Template.match.selected = function () {
 };
 
 Template.match.events({
-  'click': function () {
-    Session.set("selected_match", this._id);
+  'click': function (e) {
+    if (Session.equals("selected_match", this._id)) {
+      Session.set("selected_match", undefined);
+    } else {
+      Session.set("selected_match", this._id);
+    }
   },
 });
 
@@ -307,8 +323,12 @@ Template.deck.selected = function () {
 };
 
 Template.deck.events({
-  'click': function () {
-    Session.set("selected_deck", this._id);
+  'click': function (e) {
+    if (Session.equals("selected_deck", this._id)) {
+      Session.set("selected_deck", undefined);
+    } else {
+      Session.set("selected_deck", this._id);
+    }
   },
 });
 

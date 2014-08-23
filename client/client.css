@@ -8,15 +8,16 @@ body {
   color: white;
   font-weight: bold;
 }
-.player.selected {
+.player.selected, .player.selected:hover {
   background-color: darkblue;
 }
 
-.match.selected {
+.match.selected, .match.selected:hover {
   background-color: purple;
 }
 
-.deck.selected {
+
+.deck.selected, .deck.selected:hover {
   background-color: firebrick;
 }
 
@@ -24,6 +25,12 @@ body {
   border: 2px solid #000000;
   border-radius: 2px;
   cursor: pointer;
+}
+
+.player:hover, .match:hover, .deck:hover {
+  font-weight: bold;
+  color: white;
+  background-color: grey;
 }
 
 #d3 {
