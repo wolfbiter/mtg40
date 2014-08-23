@@ -131,8 +131,52 @@ function getDataset() {
   var matches = Utils.getMatches().fetch();
   var data = {};
   matches.forEach(function (match) {
-    data[match[field1]] || (data[match[field1]] = db.findOne(match[field1]));
-    data[match[field2]] || (data[match[field2]] = db.findOne(match[field2]));
+    // make sure models are in data
+    if (!(data[match[field1]])) {
+      data[match[field1]] =
+        $.extend({}, db.findOne(match[field1]), {
+          'gameWins': 0,
+          'gameLosses': 0,
+          'matchWins': 0,
+          'matchLosses': 0,
+        });
+    }
+    var model1 = data[match[field1]];
+    if (!(data[match[field2]])) {
+      data[match[field2]] =
+        $.extend({}, db.findOne(match[field2]), {
+          'gameWins': 0,
+          'gameLosses': 0,
+          'matchWins': 0,
+          'matchLosses': 0,
+        });
+    }
+    var model2 = data[match[field2]];
+    var wins1 = match['wins1'];
+    var wins2 = match['wins2'];
+
+    // update game wins
+    model1['gameWins'] += wins1;
+    model2['gameWins'] += wins2;
+
+    // update game losses
+    model1['gameLosses'] += wins2;
+    model2['gameLosses'] += wins1;
+
+    // update matches
+    if (match.complete) {
+      if (wins1 > wins2) {
+        // player1 wins
+        model1['matchWins']++;
+        model2['matchLosses']++;
+      } else if (wins2 > wins1) {
+        // player2 wins
+        model2['matchWins']++;
+        model1['matchLosses']++;
+      }
+    } else {
+      // incomplete / draw
+    }
   });
 
   // curate objects into array

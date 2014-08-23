@@ -79,11 +79,12 @@ Utils = {
     });
   },
 
-  'calculateStats': function () {
+  'calculateStats': function (matches) {
+    matches = matches || matches.find().fetch();
     // reset stats
     Utils.resetStats();
     // calculate new stats
-    Matches.find().fetch().forEach(function (match) {
+    matches.forEach(function (match) {
 
       var player1 = Players.findOne(match['player1']);
       var player2 = Players.findOne(match['player2']);
