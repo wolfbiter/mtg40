@@ -29,9 +29,29 @@
     <button class="update btn btn-lg btn-default {{updateActive}}">Edit</button>
     <button class="none btn btn-lg btn-default {{noneActive}}">None</button>
     <button class="unselectAll btn btn-lg btn-info">Clear Selections</button>
-    <button class="playerBars btn btn-lg btn-primary {{playersActive}}">View Players</button>
-    <button class="deckBars btn btn-lg btn-success {{decksActive}}">View Decks</button>
+    {{> selectDataset}}
+    {{> selectDatatype}}
   </div>
+</template>
+
+<template name="selectDataset">
+  <select class="selectDataset btn btn-lg btn-success dropdown-toggle">
+    {{#each options}}
+      {{> option}}
+    {{/each}}
+  </select>
+</template>
+
+<template name="selectDatatype">
+  <select class="selectDatatype btn btn-lg btn-danger dropdown-toggle">
+    {{#each options}}
+      {{> option}}
+    {{/each}}
+  </select>
+</template>
+
+<template name="option">
+  <option value="{{value}}" class="{{selected}}">{{label}}</option>
 </template>
 
 <template name="players">

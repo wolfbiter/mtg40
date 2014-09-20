@@ -142,6 +142,7 @@ Utils = {
 };
 
 Session.set("dataset", "players");
+Session.set("datatype", "matchWins");
 
 Session.set("formControls", {
   'type': 'none',
@@ -202,15 +203,41 @@ Template.formControls.events({
       'buttonContent': 'None',
     });
   },
-  'click .playerBars': function () {
-    Session.set("dataset", "players");
+
+  'change .selectDataset': function(e) {
+    var newValue = $(e.target).val();
+    Session.set("dataset", newValue);
   },
-  'click .deckBars': function () {
-    Session.set("dataset", "decks");
+
+  'change .selectDatatype': function(e) {
+    var newValue = $(e.target).val();
+    Session.set("dataType", newValue);
   },
+
   'click .unselectAll': Utils.unselectAll,
 
-})
+});
+
+Template.selectDataset.options = function () {
+  return [
+    {'label': 'Players', 'value': 'players', 'type': 'dataset'},
+    {'label': 'Decks', 'value': 'decks', 'type': 'dataset'},
+  ];
+};
+
+Template.selectDatatype.options = function () {
+  return [
+    {'label': 'Match Wins', 'value': 'matchWins', 'type': 'datatype'},
+    {'label': 'Match Losses', 'value': 'matchLosses', 'type': 'datatype'},
+    {'label': 'Game Wins', 'value': 'gameWins', 'type': 'datatype'},
+    {'label': 'Game Losses', 'value': 'gameLosses', 'type': 'datatype'},
+    {'label': 'Ratio', 'value': 'ratio', 'type': 'datatype'},
+  ];
+};
+
+Template.option.selected = function () {
+  return Session.equals(this.type, this.value) ? "selected" : '';
+};
 
 
 /*******************/
