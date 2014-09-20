@@ -80,7 +80,7 @@ Utils = {
   },
 
   'calculateStats': function (matches) {
-    matches = matches || matches.find().fetch();
+    matches = matches || Matches.find().fetch();
     // reset stats
     Utils.resetStats();
     // calculate new stats
