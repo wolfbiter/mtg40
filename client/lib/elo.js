@@ -149,7 +149,7 @@ ELO.prototype.bothExpectedScores = function(player_1_rating, player_2_rating) {
 };
 
 /**
- * The calculated new rating based on the expected outcone, actual outcome, and previous score
+ * The calculated new rating based on the expected outcome, actual outcome, and previous score
  *
  * @param {Number} expected_score The expected score, e.g. 0.25
  * @param {Number} actual_score The actual score, e.g. 1

@@ -6,22 +6,22 @@ Players = new Meteor.Collection('players', {
     },
     'matchWins': {
       'type': Number,
-      'minCount': 0,
       'defaultValue': 0,
     },
     'matchLosses': {
       'type': Number,
-      'minCount': 0,
       'defaultValue': 0,
     },
     'gameWins': {
       'type': Number,
-      'minCount': 0,
       'defaultValue': 0,
     },
     'gameLosses': {
       'type': Number,
-      'minCount': 0,
+      'defaultValue': 0,
+    },
+    'elo': {
+      'type': Number,
       'defaultValue': 0,
     },
   }

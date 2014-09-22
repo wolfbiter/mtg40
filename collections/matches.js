@@ -40,7 +40,6 @@ Matches = new Meteor.Collection('matches', {
     },
     'wins1': {
       'type': Number,
-      'allowedValues': [0, 1, 2],
       'label': 'Player 1 Wins',
       'custom': function () {
         var wins1 = this.value;
@@ -50,7 +49,6 @@ Matches = new Meteor.Collection('matches', {
     },
     'wins2': {
       'type': Number,
-      'allowedValues': [0, 1, 2],
       'label': 'Player 2 Wins',
       'custom': function () {
         var wins1 = this.field('wins1').value;
@@ -72,9 +70,9 @@ Matches = new Meteor.Collection('matches', {
       'type': Date,
       'autoValue': function() {
         if (this.isInsert) {
-          return new Date;
+          return new Date();
         } else if (this.isUpsert) {
-          return {$setOnInsert: new Date};
+          return {$setOnInsert: new Date()};
         }
       }
     }
@@ -105,22 +103,19 @@ function makeOptionsFn(db) {
         'value': model._id,
       };
     });
-  }
+  };
 }
-// custom validation, make sure deck1 != deck2
+
 function decksValidation(deck1, deck2) {
-  if (deck1 == deck2) {
+  if (deck1 === deck2) {
     return "A deck cannot play a match against itself!";
   } else {
     return true;
   }
 }
 
-// custom validation, make sure 0 <= wins1 + wins2 < 3
 function winsValidation(wins1, wins2) {
-  if (wins1 + wins2 > 3) {
-    return "Too many wins for a best-of-three match!";
-  } else if (wins1 + wins2 <= 0) {
+  if (wins1 + wins2 <= 0) {
     return "Cannot create a match with no wins!";
   } else {
     return true;
@@ -130,5 +125,5 @@ function winsValidation(wins1, wins2) {
 function isComplete () {
   var wins1 = this.field('wins1').value;
   var wins2 = this.field('wins2').value;
-  return (wins1 + wins2 >= 2);
+  return (wins1 + wins2 >= 2) && (wins1 !== wins2);
 }
