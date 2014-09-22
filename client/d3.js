@@ -106,7 +106,7 @@ Meteor.startup(function () {
 
 function getValue(d) {
   var value;
-  var dataType = Session.get('dataType') || 'matchWins';
+  var dataType = Session.get('dataType') || 'elo';
   switch (dataType) {
     case 'ratio':
       if (d.matchWins && d.matchLosses) {
@@ -130,13 +130,15 @@ function getText(d) {
 }
 
 function getScalar() {
-  var dataType = Session.get('dataType') || 'matchWins';
+  var dataType = Session.get('dataType') || 'elo';
   switch (dataType) {
     case 'matchWins': return 8;
     case 'matchLosses': return 8;
     case 'gameWins': return 4;
     case 'gameLosses': return 4;
     case 'ratio': return 150;
+    case 'elo': return 0.2;
+    default: return 20;
   }
 }
 
@@ -212,7 +214,17 @@ function getDataset() {
       dataArray.push(data[key]);
     }
   }
-  dataArray.sort();
+  // sort array
+  var dataType = Session.get('dataType') || 'matchWins';
+  dataArray.sort(function(a, b) {
+    a = a[dataType];
+    b = b[dataType];
+    if (a === b) {
+      return 0;
+    } else {
+      return b > a ? 1 : 0;
+    }
+  });
   dataArray.reverse();
   return dataArray;
 }

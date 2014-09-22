@@ -22,7 +22,7 @@ Players = new Meteor.Collection('players', {
     },
     'elo': {
       'type': Number,
-      'defaultValue': 0,
+      'defaultValue': 1200,
     },
   }
 });

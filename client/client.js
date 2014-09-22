@@ -58,6 +58,14 @@ Utils = {
     console.log("-------------END PRINTING MATCH-------------");
   },
 
+  'elo': new ELO(),
+
+  'getTeamElo': function(player, deck) {
+    var playerFactor = 0.3;
+    var deckFactor = 1 - playerFactor;
+    return (playerFactor * player.elo) + (deckFactor * deck.elo);
+  },
+
   'resetStats': function () {
     // clear all player stats
     Players.find().fetch().forEach(function (player) {
@@ -66,6 +74,7 @@ Utils = {
         'gameLosses': 0,
         'matchWins': 0,
         'matchLosses': 0,
+        'elo': 1200,
       }});
     });
     // clear all deck stats
@@ -75,6 +84,7 @@ Utils = {
         'gameLosses': 0,
         'matchWins': 0,
         'matchLosses': 0,
+        'elo': 1200,
       }});
     });
   },
@@ -84,6 +94,7 @@ Utils = {
     // reset stats
     Utils.resetStats();
     // calculate new stats
+    var elo = Utils.elo;
     matches.forEach(function (match) {
 
       var player1 = Players.findOne(match['player1']);
@@ -105,7 +116,9 @@ Utils = {
       player2['gameLosses'] += wins1;
       deck2['gameLosses'] += wins1;
 
-      // update matches
+      // update matches and elo
+      var elo1 = Utils.getTeamElo(player1, deck1);
+      var elo2 = Utils.getTeamElo(player2, deck2);
       if (match.complete) {
         if (wins1 > wins2) {
           // player1 wins
@@ -113,15 +126,27 @@ Utils = {
           deck1['matchWins']++;
           player2['matchLosses']++;
           deck2['matchLosses']++;
+          player1.elo = elo.newRatingIfWon(elo1, elo2);
+          player2.elo = elo.newRatingIfLost(elo2, elo1);
+          deck1.elo = elo.newRatingIfWon(elo1, elo2);
+          deck2.elo = elo.newRatingIfLost(elo2, elo1);
         } else if (wins2 > wins1) {
           // player2 wins
           player2['matchWins']++;
           deck2['matchWins']++;
           player1['matchLosses']++;
           deck1['matchLosses']++;
+          player2.elo = elo.newRatingIfWon(elo2, elo1);
+          player1.elo = elo.newRatingIfLost(elo1, elo2);
+          deck2.elo = elo.newRatingIfWon(elo2, elo1);
+          deck1.elo = elo.newRatingIfLost(elo1, elo2);
         }
       } else {
         // incomplete / draw
+        player1.elo = elo.newRatingIfTied(elo1, elo2);
+        player2.elo = elo.newRatingIfTied(elo2, elo1);
+        deck1.elo = elo.newRatingIfTied(elo1, elo2);
+        deck2.elo = elo.newRatingIfTied(elo2, elo1);
       }
 
       // push updates
@@ -227,6 +252,7 @@ Template.selectDataset.options = function () {
 
 Template.selectDatatype.options = function () {
   return [
+    {'label': 'Elo', 'value': 'elo', 'type': 'datatype'},
     {'label': 'Match Wins', 'value': 'matchWins', 'type': 'datatype'},
     {'label': 'Match Losses', 'value': 'matchLosses', 'type': 'datatype'},
     {'label': 'Game Wins', 'value': 'gameWins', 'type': 'datatype'},

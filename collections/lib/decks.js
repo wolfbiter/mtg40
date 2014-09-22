@@ -31,7 +31,7 @@ Decks = new Meteor.Collection('decks', {
     },
     'elo': {
       'type': Number,
-      'defaultValue': 0,
+      'defaultValue': 1200,
     },
   }
 });
