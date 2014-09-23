@@ -1,6 +1,7 @@
 /******************/
 /****** Init ******/
 /******************/
+playerFactor = 0.2;
 
 Utils = {
 
@@ -61,7 +62,6 @@ Utils = {
   'elo': new ELO(),
 
   'getTeamElo': function(player, deck) {
-    var playerFactor = 0.3;
     var deckFactor = 1 - playerFactor;
     return (playerFactor * player.elo) + (deckFactor * deck.elo);
   },
@@ -119,6 +119,8 @@ Utils = {
       // update matches and elo
       var elo1 = Utils.getTeamElo(player1, deck1);
       var elo2 = Utils.getTeamElo(player2, deck2);
+      var team1Expected = elo.expectedScore(elo1, elo2);
+      var team2Expected = elo.expectedScore(elo2, elo1);
       if (match.complete) {
         if (wins1 > wins2) {
           // player1 wins
@@ -126,27 +128,27 @@ Utils = {
           deck1['matchWins']++;
           player2['matchLosses']++;
           deck2['matchLosses']++;
-          player1.elo = elo.newRatingIfWon(elo1, elo2);
-          player2.elo = elo.newRatingIfLost(elo2, elo1);
-          deck1.elo = elo.newRatingIfWon(elo1, elo2);
-          deck2.elo = elo.newRatingIfLost(elo2, elo1);
+          player1.elo = elo.newRating(team1Expected, 1.0, player1.elo);
+          player2.elo = elo.newRating(team2Expected, 0.0, player2.elo);
+          deck1.elo = elo.newRating(team1Expected, 1.0, deck1.elo);
+          deck2.elo = elo.newRating(team2Expected, 0.0, deck2.elo);
         } else if (wins2 > wins1) {
           // player2 wins
           player2['matchWins']++;
           deck2['matchWins']++;
           player1['matchLosses']++;
           deck1['matchLosses']++;
-          player2.elo = elo.newRatingIfWon(elo2, elo1);
-          player1.elo = elo.newRatingIfLost(elo1, elo2);
-          deck2.elo = elo.newRatingIfWon(elo2, elo1);
-          deck1.elo = elo.newRatingIfLost(elo1, elo2);
+          player1.elo = elo.newRating(team1Expected, 0.0, player1.elo);
+          player2.elo = elo.newRating(team2Expected, 1.0, player2.elo);
+          deck1.elo = elo.newRating(team1Expected, 0.0, deck1.elo);
+          deck2.elo = elo.newRating(team2Expected, 1.0, deck2.elo);
         }
       } else {
         // incomplete / draw
-        player1.elo = elo.newRatingIfTied(elo1, elo2);
-        player2.elo = elo.newRatingIfTied(elo2, elo1);
-        deck1.elo = elo.newRatingIfTied(elo1, elo2);
-        deck2.elo = elo.newRatingIfTied(elo2, elo1);
+        player1.elo = elo.newRating(team1Expected, 0.5, player1.elo);
+        player2.elo = elo.newRating(team2Expected, 0.5, player2.elo);
+        deck1.elo = elo.newRating(team1Expected, 0.5, deck1.elo);
+        deck2.elo = elo.newRating(team2Expected, 0.5, deck2.elo);
       }
 
       // push updates
@@ -189,24 +191,24 @@ var keyBindingsInterval = Meteor.setInterval(function(){
 /************************/
 
 Template.formControls.createActive = function () {
-  return Session.get("formControls").type == 'insert' ? 'active' : '';
-}
+  return Session.get("formControls").type === 'insert' ? 'active' : '';
+};
 
 Template.formControls.updateActive = function () {
-  return Session.get("formControls").type == 'update' ? 'active' : '';
-}
+  return Session.get("formControls").type === 'update' ? 'active' : '';
+};
 
 Template.formControls.noneActive = function () {
-  return Session.get("formControls").type == 'none' ? 'active' : '';
-}
+  return Session.get("formControls").type === 'none' ? 'active' : '';
+};
 
 Template.formControls.playersActive = function () {
-  return Session.get("dataset") == 'players' ? 'active' : '';
-}
+  return Session.get("dataset") === 'players' ? 'active' : '';
+};
 
 Template.formControls.decksActive = function () {
-  return Session.get("dataset") == 'decks' ? 'active' : '';
-}
+  return Session.get("dataset") === 'decks' ? 'active' : '';
+};
 
 Template.formControls.events({
 
@@ -296,21 +298,21 @@ Template.player.events({
 
 Template.playerForm.type = function () {
   return Session.get("formControls").type;
-}
+};
 
 Template.playerForm.buttonContent = function () {
   return Session.get("formControls").buttonContent + " Player";
-}
+};
 
 Template.playerForm.doc = function () {
   if (Session.get("formControls").type === 'update') {
     return Players.findOne(Session.get("selected_player")) || Players.findOne();
   }
-}
+};
 
 Template.playerForm.formActive = function () {
   return (Session.get("formControls").type === 'none') ? false : true;
-}
+};
 
 
 /*******************/
@@ -341,21 +343,21 @@ Template.match.events({
 
 Template.matchForm.type = function () {
   return Session.get("formControls").type;
-}
+};
 
 Template.matchForm.buttonContent = function () {
   return Session.get("formControls").buttonContent + " Match";
-}
+};
 
 Template.matchForm.doc = function () {
   if (Session.get("formControls").type === 'update') {
     return Matches.findOne(Session.get("selected_match")) || Matches.findOne();
   }
-}
+};
 
 Template.matchForm.formActive = function () {
   return Session.get("formControls").type === 'none' ? false : true;
-}
+};
 
 
 /*******************/
@@ -388,21 +390,21 @@ Template.deck.events({
 
 Template.deckForm.type = function () {
   return Session.get("formControls").type;
-}
+};
 
 Template.deckForm.buttonContent = function () {
   return Session.get("formControls").buttonContent + " Deck";
-}
+};
 
 Template.deckForm.doc = function () {
   if (Session.get("formControls").type === 'update') {
     return Decks.findOne(Session.get("selected_deck")) || Decks.findOne();
   }
-}
+};
 
 Template.deckForm.formActive = function () {
   return Session.get("formControls").type === 'none' ? false : true;
-}
+};
 
 
 /*******************/

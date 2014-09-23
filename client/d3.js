@@ -215,10 +215,9 @@ function getDataset() {
     }
   }
   // sort array
-  var dataType = Session.get('dataType') || 'matchWins';
   dataArray.sort(function(a, b) {
-    a = a[dataType];
-    b = b[dataType];
+    a = getValue(a);
+    b = getValue(b);
     if (a === b) {
       return 0;
     } else {
