@@ -1,9 +1,10 @@
 /******************/
 /****** Init ******/
 /******************/
-playerFactor = 0.2;
 
 Utils = {
+  'playerFactor': 0.3,
+  'elo': new ELO(),
 
   'unselectAll': function () {
     Session.set("selected_player", undefined);
@@ -59,9 +60,8 @@ Utils = {
     console.log("-------------END PRINTING MATCH-------------");
   },
 
-  'elo': new ELO(),
-
   'getTeamElo': function(player, deck) {
+    var playerFactor = Utils.playerFactor;
     var deckFactor = 1 - playerFactor;
     return (playerFactor * player.elo) + (deckFactor * deck.elo);
   },
@@ -238,7 +238,7 @@ Template.formControls.events({
 
   'change .selectDatatype': function(e) {
     var newValue = $(e.target).val();
-    Session.set("dataType", newValue);
+    Session.set("datatype", newValue);
   },
 
   'click .unselectAll': Utils.unselectAll,

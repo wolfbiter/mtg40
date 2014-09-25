@@ -106,8 +106,8 @@ Meteor.startup(function () {
 
 function getValue(d) {
   var value;
-  var dataType = Session.get('dataType') || 'elo';
-  switch (dataType) {
+  var datatype = Session.get('datatype');
+  switch (datatype) {
     case 'ratio':
       if (d.matchWins && d.matchLosses) {
         value = (d.matchWins / d.matchLosses).toFixed(2);
@@ -115,7 +115,7 @@ function getValue(d) {
         value = 0;
       } break;
     default:
-      value = d[dataType];
+      value = d[datatype];
   }
   return value;
 }
@@ -130,8 +130,8 @@ function getText(d) {
 }
 
 function getScalar() {
-  var dataType = Session.get('dataType') || 'elo';
-  switch (dataType) {
+  var datatype = Session.get('datatype');
+  switch (datatype) {
     case 'matchWins': return 8;
     case 'matchLosses': return 8;
     case 'gameWins': return 4;
