@@ -46,6 +46,25 @@ Utils = {
     }
   },
 
+  'getRandomMatch': function() {
+    var decks = Decks.find().fetch();
+    var random1 = ~~(Math.random() * decks.length);
+    var random2 = ~~(Math.random() * decks.length);
+    while (random1 === random2) {
+      random2 = ~~(Math.random() * decks.length);
+    }
+    return [decks[random1], decks[random2]];
+  },
+
+  'getRandomMatches': function(n) {
+    var matches = [];
+    while (n > 0) {
+      n--;
+      matches.push(Utils.getRandomMatch());
+    }
+    return matches;
+  },
+
   'printMatch': function (match) {
     var player1 = Players.findOne(match['player1']);
     var player2 = Players.findOne(match['player2']);
@@ -53,11 +72,17 @@ Utils = {
     var deck2 = Decks.findOne(match['deck2']);
     var wins1 = match['wins1'];
     var wins2 = match['wins2'];
+    var str = "-------------PRINTING MATCH-------------\n" +
+      player1.title + " vs " + player2.title + "\n" +
+      deck1.title + " vs " + deck2.title + "\n" +
+      wins1 + " - " + wins2 + "\n" +
+      "-------------END PRINTING MATCH-------------";
     console.log("-------------PRINTING MATCH-------------");
     console.log(player1.title + " vs " + player2.title);
     console.log(deck1.title + " vs " + deck2.title);
     console.log(wins1 + " - " + wins2);
     console.log("-------------END PRINTING MATCH-------------");
+    return str;
   },
 
   'getTeamElo': function(player, deck) {
@@ -229,6 +254,13 @@ Template.formControls.events({
       'type': 'none',
       'buttonContent': 'None',
     });
+  },
+  'click .random': function(e) {
+    var str = Utils.getRandomMatches(5).map(function(match) {
+      return match[0].title + ' : ' + match[1].title;
+    }).join('\n');
+    console.log(str);
+    window.alert(str);
   },
 
   'change .selectDataset': function(e) {
